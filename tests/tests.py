@@ -26,6 +26,7 @@ from nose.plugins.skip import SkipTest
 import signal
 import threading
 import time
+import warnings
 
 from unittest import TestCase
 
@@ -180,6 +181,9 @@ class TestCPopen(TestCase):
         self.assertEquals(out[0].strip(), '0007')
 
     def testUmaskTmpfile(self):
+        warnings.filterwarnings(
+            'ignore',
+            '^tempnam is a potential security risk.*')
         name = os.tempnam()
         p = CPopen(['touch', name], childUmask=0o007)
         p.wait()
