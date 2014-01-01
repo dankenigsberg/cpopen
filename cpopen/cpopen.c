@@ -346,12 +346,14 @@ sendErrno:
                     case EAGAIN:
                         break;
                     default:
-                        PyErr_SetString(PyExc_OSError, strerror(childErrno));
+                        PyErr_SetFromErrno(PyExc_OSError);
                         goto fail;
 
                 }
             } else if (rv < sizeof(int)) {
-                PyErr_SetString(PyExc_OSError, strerror(childErrno));
+                /* Invalid response size from child */
+                errno = EIO;
+                PyErr_SetFromErrno(PyExc_OSError);
                 goto fail;
             }
             break;
